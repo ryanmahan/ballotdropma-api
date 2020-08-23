@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const log4js = require("log4js");
+require('dotenv').config()
 const GenericController = require("./controllers/GenericController");
 const bodyParser = require("body-parser");
 const Location = require("./models/Location");
@@ -18,7 +19,14 @@ mongoose.connect("mongodb://localhost:27017/ballotdrop", {
   useUnifiedTopology: true,
 })
 
-app.use(cors());
+if (process.env.ENVIRONMENT === "LOCAL") {
+  app.use(cors())
+} else {
+  app.use(cors({
+    origin: ["http://localhost:3000", "http://ballotdropma.com"]
+  }));
+}
+
 app.set("trust proxy", 1);
 
 
@@ -28,7 +36,10 @@ app.use((req, res, next) => {
 })
 
 app.get("/ping", (req, res) => res.send("pong"));
-app.get("/session", (req, res) => res.json(req.sessionID))
+app.get("/session", (req, res) => {
+  console.log(req.query)
+  res.json(req.query.session)
+})
 app.use("/comments", CommentController(Router()))
 app.use("/locations", GenericController(Location, Router()));
 

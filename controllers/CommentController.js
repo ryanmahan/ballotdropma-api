@@ -11,9 +11,8 @@ const CommentController = (router) => {
   GenericController(Comment, router);
 
   router.post("/", (req, res) => {
-    const { id: sessionId } = req.session;
     const comment = new Comment({
-      sessionId,
+      sessionId: req.query.session,
       reports: [],
       ...req.body,
     })
@@ -24,7 +23,7 @@ const CommentController = (router) => {
 
   router.patch("/report/:id", (req, res) => {
     Comment.findByIdAndUpdate(req.params.id, {
-      $addToSet: { reports: req.session.id }
+      $addToSet: { reports: req.query.session }
     }, GenericCallback(res))
   })
 
