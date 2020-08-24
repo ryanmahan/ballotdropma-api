@@ -13,20 +13,13 @@ const app = express();
 const logger = log4js.getLogger();
 app.use(bodyParser.json());
 
-
-mongoose.connect("mongodb://localhost:27017/ballotdrop", {
+mongoose.connect(process.env.mongo_uri || "mongodb://localhost:27017/ballotdrop", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 
-if (process.env.ENVIRONMENT === "LOCAL") {
-  app.use(cors())
-} else {
-  app.use(cors({
-    origin: ["http://localhost:3000", "http://ballotdropma.com"]
-  }));
-}
 
+app.use(cors())
 app.set("trust proxy", 1);
 
 
