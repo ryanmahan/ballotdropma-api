@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 
 const uri = process.env.mongo_uri || "mongodb://localhost:27017/ballotdrop"
-console.log(uri)
+
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
