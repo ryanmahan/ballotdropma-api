@@ -13,7 +13,10 @@ const app = express();
 const logger = log4js.getLogger();
 app.use(bodyParser.json());
 
-mongoose.connect(process.env.mongo_uri || "mongodb://localhost:27017/ballotdrop", {
+
+const uri = process.env.mongo_uri || "mongodb://localhost:27017/ballotdrop"
+console.log(uri)
+mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
