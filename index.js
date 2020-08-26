@@ -18,7 +18,12 @@ app.use(bodyParser.json());
 app.use(function (req, res, next) {
   console.log(req.method + " " + req.url);
   if (req.query && req.query.session) {
-    User.update({ session: req.query.session }, { lastAccess: Date.now() }, { upsert: true });
+    User.replaceOne(
+      { session: req.query.session },
+      { session: req.query.session, lastAccess: Date.now() },
+      { upsert: true }
+    ).then((doc) => console.log("session updated"))
+    .catch((err => console.log("session error")));
   }
   next();
 })
