@@ -7,7 +7,11 @@ const logger = log4js.getLogger();
 const GenericController = (Model, router) => {
 
   router.get("/", (req, res) => {
-    Model.find(JSON.parse(req.query.query), req.query.fields, GenericCallback(res))
+    let query = {}
+    if (req.query.query) {
+      query = JSON.parse(req.query.query)
+    }
+    Model.find(query, req.query.fields, GenericCallback(res))
   })
 
   router.get("/:id", (req, res) => {
