@@ -1,6 +1,6 @@
 module.exports = (res) => (err, doc) => {
   if (err) {
-    logger.error(err);
+    console.error(err);
     res.status(500).json(err);
   }
   else if (doc) res.json(doc).status(2000);

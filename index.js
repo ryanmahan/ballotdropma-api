@@ -7,12 +7,21 @@ const GenericController = require("./controllers/GenericController");
 const bodyParser = require("body-parser");
 const Location = require("./models/Location");
 const CommentController = require("./controllers/CommentController");
+const User = require("./models/User");
 
 const { Router } = express;
 const app = express();
 const logger = log4js.getLogger();
 app.use(bodyParser.json());
 
+
+app.use(function (req, res, next) {
+  console.log(req.method + " " + req.url);
+  if (req.query && req.query.session) {
+    User.update({ session: req.query.session }, { lastAccess: Date.now() }, { upsert: true });
+  }
+  next();
+})
 
 const uri = process.env.mongo_uri || "mongodb://localhost:27017/ballotdrop"
 
@@ -21,15 +30,8 @@ mongoose.connect(uri, {
   useUnifiedTopology: true,
 })
 
-
 app.use(cors())
 app.set("trust proxy", 1);
-
-
-app.use((req, res, next) => {
-  logger.info(req.method + " " + req.url);
-  next();
-})
 
 app.get("/ping", (req, res) => res.send("pong"));
 app.get("/session", (req, res) => {
@@ -38,6 +40,7 @@ app.get("/session", (req, res) => {
 })
 app.use("/comments", CommentController(Router()))
 app.use("/locations", GenericController(Location, Router()));
+
 
 
 app.listen(8080, () => console.log("App listening on 8080"));

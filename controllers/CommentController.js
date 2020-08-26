@@ -11,6 +11,7 @@ const CommentController = (router) => {
   GenericController(Comment, router);
 
   router.post("/", (req, res) => {
+    console.log("POST COMMENT" + req.body);
     const comment = new Comment({
       sessionId: req.query.session,
       reports: [],
